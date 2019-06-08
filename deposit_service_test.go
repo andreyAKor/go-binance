@@ -63,3 +63,22 @@ func (s *depositServiceTestSuite) assertDepositEqual(e, a *Deposit) {
 	r.Equal(e.Status, a.Status, "Status")
 	r.Equal(e.TxID, a.TxID, "TxID")
 }
+
+func (s *depositServiceTestSuite) TestGetDepositAddres() {
+	data := []byte(`
+{
+	"address": "0x6915f16f8791d0a1cc2bf47c13a6b2a92000504b",
+	"success": true,
+	"addressTag": "1231212",
+	"asset": "BNB"
+}`)
+	s.mockDo(data, nil)
+	defer s.assertDo()
+
+	res, err := s.client.NewGetDepositAddresService().Do(newContext())
+	s.r().NoError(err)
+	s.r().Equal(res.Address, "0x6915f16f8791d0a1cc2bf47c13a6b2a92000504b", "Address")
+	s.r().Equal(res.Success, true, "Success")
+	s.r().Equal(res.AddressTag, "1231212", "AddressTag")
+	s.r().Equal(res.Asset, "BNB", "Asset")
+}

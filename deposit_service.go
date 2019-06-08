@@ -86,3 +86,48 @@ type Deposit struct {
 	Status     int     `json:"status"`
 	TxID       string  `json:"txId"`
 }
+
+// GetDepositAddresService get deposit address
+type GetDepositAddresService struct {
+	c     *Client
+	asset string
+}
+
+// Asset set asset
+func (s *GetDepositAddresService) Asset(asset string) *GetDepositAddresService {
+	s.asset = asset
+	return s
+}
+
+// Do send request
+func (s *GetDepositAddresService) Do(ctx context.Context, opts ...RequestOption) (*DepositAddresResponse, error) {
+	r := &request{
+		method:   "GET",
+		endpoint: "/wapi/v3/depositAddress.html",
+		secType:  secTypeSigned,
+	}
+
+	r.setParam("asset", s.asset)
+
+	data, err := s.c.callAPI(ctx, r, opts...)
+	if err != nil {
+		return nil, err
+	}
+
+	res := new(DepositAddresResponse)
+
+	err = json.Unmarshal(data, res)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
+
+// DepositAddresResponse define deposit addres
+type DepositAddresResponse struct {
+	Address    string `json:"address"`
+	Success    bool   `json:"success"`
+	AddressTag string `json:"addressTag"`
+	Asset      string `json:"asset"`
+}

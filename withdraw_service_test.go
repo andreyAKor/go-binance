@@ -119,14 +119,14 @@ func (s *withdrawServiceTestSuite) TestGetAssetDetail() {
 	"success": true,
 	"assetDetail": {
 		"CTR": {
-			"minWithdrawAmount": "70.00000000",
+			"minWithdrawAmount": 70.00000000,
 			"depositStatus": false,
 			"withdrawFee": 35,
 			"withdrawStatus": true,
 			"depositTip": "Delisted, Deposit Suspended"
 		},
 		"SKY": {
-			"minWithdrawAmount": "0.02000000",
+			"minWithdrawAmount": 0.02000000,
 			"depositStatus": true,
 			"withdrawFee": 0.01,
 			"withdrawStatus": true
@@ -142,12 +142,12 @@ func (s *withdrawServiceTestSuite) TestGetAssetDetail() {
 
 	s.r().NotZero(len(res.AssetsDetails))
 
-	s.r().Equal(res.AssetsDetails["CTR"].MinWithdrawAmount, "70.00000000", "minWithdrawAmount")
+	s.r().Equal(res.AssetsDetails["CTR"].MinWithdrawAmount, float64(70.00000000), "minWithdrawAmount")
 	s.r().Equal(res.AssetsDetails["CTR"].DepositStatus, false, "depositStatus")
 	s.r().Equal(res.AssetsDetails["CTR"].WithdrawFee, float64(35), "withdrawFee")
 	s.r().Equal(res.AssetsDetails["CTR"].WithdrawStatus, true, "withdrawStatus")
 	s.r().Equal(res.AssetsDetails["CTR"].DepositTip, "Delisted, Deposit Suspended", "depositTip")
 
-	s.r().Equal(res.AssetsDetails["SKY"].MinWithdrawAmount, "0.02000000", "minWithdrawAmount")
+	s.r().Equal(res.AssetsDetails["SKY"].MinWithdrawAmount, float64(0.02000000), "minWithdrawAmount")
 	s.r().Equal(res.AssetsDetails["SKY"].WithdrawFee, float64(0.01), "withdrawFee")
 }

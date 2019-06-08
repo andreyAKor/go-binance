@@ -304,6 +304,11 @@ func (c *Client) NewListDepositsService() *ListDepositsService {
 	return &ListDepositsService{c: c}
 }
 
+// NewGetDepositAddresService init listing deposits service
+func (c *Client) NewGetDepositAddresService() *GetDepositAddresService {
+	return &GetDepositAddresService{c: c}
+}
+
 // NewCreateWithdrawService init creating withdraw service
 func (c *Client) NewCreateWithdrawService() *CreateWithdrawService {
 	return &CreateWithdrawService{c: c}

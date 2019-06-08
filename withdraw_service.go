@@ -171,7 +171,7 @@ type AssetDetailResponse struct {
 
 // Full asset detail
 type AssetDetail struct {
-	MinWithdrawAmount string  `json:"minWithdrawAmount"` // min withdraw amount
+	MinWithdrawAmount float64 `json:"minWithdrawAmount"` // min withdraw amount
 	DepositStatus     bool    `json:"depositStatus"`     // deposit status
 	WithdrawFee       float64 `json:"withdrawFee"`       // withdraw fee
 	WithdrawStatus    bool    `json:"withdrawStatus"`    // withdraw status
