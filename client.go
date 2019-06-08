@@ -334,7 +334,7 @@ func (c *Client) NewExchangeInfoService() *ExchangeInfoService {
 	return &ExchangeInfoService{c: c}
 }
 
-// NewGetWithdrawFeeService init get withdraw fee service
-func (c *Client) NewGetWithdrawFeeService() *GetWithdrawFeeService {
-	return &GetWithdrawFeeService{c: c}
+// NewGetAssetDetailService init get asset detail service
+func (c *Client) NewGetAssetDetailService() *GetAssetDetailService {
+	return &GetAssetDetailService{c: c}
 }

@@ -62,12 +62,12 @@ func (s *ListDepositsService) Do(ctx context.Context, opts ...RequestOption) (de
 
 	data, err := s.c.callAPI(ctx, r, opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	res := new(DepositHistoryResponse)
 	err = json.Unmarshal(data, res)
 	if err != nil {
-		return
+		return nil, err
 	}
 	return res.Deposits, nil
 }

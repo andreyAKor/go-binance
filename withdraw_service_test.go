@@ -113,18 +113,41 @@ func (s *withdrawServiceTestSuite) assertWithdrawEqual(e, a *Withdraw) {
 	r.Equal(e.Status, a.Status, "Status")
 }
 
-func (s *withdrawServiceTestSuite) TestGetWithdrawFee() {
-	data := []byte(`{"success": true,"withdrawFee": 0.00050}`)
+func (s *withdrawServiceTestSuite) TestGetAssetDetail() {
+	data := []byte(`
+{
+	"success": true,
+	"assetDetail": {
+		"CTR": {
+			"minWithdrawAmount": "70.00000000",
+			"depositStatus": false,
+			"withdrawFee": 35,
+			"withdrawStatus": true,
+			"depositTip": "Delisted, Deposit Suspended"
+		},
+		"SKY": {
+			"minWithdrawAmount": "0.02000000",
+			"depositStatus": true,
+			"withdrawFee": 0.01,
+			"withdrawStatus": true
+		}
+	}
+}`)
 	s.mockDo(data, nil)
 	defer s.assertDo()
 
-	asset := "BTC"
-	s.assertReq(func(r *request) {
-		e := newSignedRequest().setParam("asset", asset)
-		s.assertRequestEqual(e, r)
-	})
-
-	res, err := s.client.NewGetWithdrawFeeService().Asset(asset).Do(newContext())
+	res, err := s.client.NewGetAssetDetailService().Do(newContext())
 	s.r().NoError(err)
-	s.r().Equal(res.Fee, 0.0005, "Fee")
+	s.r().Equal(res.Success, true, "Success")
+
+	s.r().NotZero(len(res.AssetsDetails))
+
+	s.r().Equal(res.AssetsDetails["CTR"].MinWithdrawAmount, "70.00000000", "minWithdrawAmount")
+	s.r().Equal(res.AssetsDetails["CTR"].DepositStatus, false, "depositStatus")
+	s.r().Equal(res.AssetsDetails["CTR"].WithdrawFee, float64(35), "withdrawFee")
+	s.r().Equal(res.AssetsDetails["CTR"].WithdrawStatus, true, "withdrawStatus")
+	s.r().Equal(res.AssetsDetails["CTR"].DepositTip, "Delisted, Deposit Suspended", "depositTip")
+
+	s.r().Equal(res.AssetsDetails["SKY"].MinWithdrawAmount, "0.02000000", "minWithdrawAmount")
+	s.r().Equal(res.AssetsDetails["SKY"].WithdrawFee, float64(0.01), "withdrawFee")
 }
