@@ -39,20 +39,40 @@ func (s *CreateWithdrawService) Name(name string) *CreateWithdrawService {
 }
 
 // Do send request
-func (s *CreateWithdrawService) Do(ctx context.Context) (err error) {
+func (s *CreateWithdrawService) Do(ctx context.Context, opts ...RequestOption) (*WithdrawResponse, error) {
 	r := &request{
 		method:   "POST",
 		endpoint: "/wapi/v3/withdraw.html",
 		secType:  secTypeSigned,
 	}
+
 	r.setParam("asset", s.asset)
 	r.setParam("address", s.address)
 	r.setParam("amount", s.amount)
+
 	if s.name != nil {
 		r.setParam("name", *s.name)
 	}
-	_, err = s.c.callAPI(ctx, r)
-	return err
+
+	data, err := s.c.callAPI(ctx, r, opts...)
+	if err != nil {
+		return nil, err
+	}
+
+	res := new(WithdrawResponse)
+
+	if err := json.Unmarshal(data, res); err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
+
+// WithdrawResponse define withdraw data
+type WithdrawResponse struct {
+	Msg     string `json:"msg"`
+	Success bool   `json:"success"`
+	Id      string `json:"id"`
 }
 
 // ListWithdrawsService list withdraws
@@ -89,12 +109,13 @@ func (s *ListWithdrawsService) EndTime(endTime int64) *ListWithdrawsService {
 }
 
 // Do send request
-func (s *ListWithdrawsService) Do(ctx context.Context) (withdraws []*Withdraw, err error) {
+func (s *ListWithdrawsService) Do(ctx context.Context, opts ...RequestOption) ([]*Withdraw, error) {
 	r := &request{
 		method:   "POST",
 		endpoint: "/wapi/v1/getWithdrawHistory.html",
 		secType:  secTypeSigned,
 	}
+
 	if s.asset != nil {
 		r.setParam("asset", *s.asset)
 	}
@@ -107,15 +128,18 @@ func (s *ListWithdrawsService) Do(ctx context.Context) (withdraws []*Withdraw, e
 	if s.endTime != nil {
 		r.setParam("endTime", *s.endTime)
 	}
-	data, err := s.c.callAPI(ctx, r)
+
+	data, err := s.c.callAPI(ctx, r, opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
+
 	res := new(WithdrawHistoryResponse)
-	err = json.Unmarshal(data, res)
-	if err != nil {
-		return
+
+	if err := json.Unmarshal(data, res); err != nil {
+		return nil, err
 	}
+
 	return res.Withdraws, nil
 }
 
@@ -155,8 +179,7 @@ func (s *GetAssetDetailService) Do(ctx context.Context, opts ...RequestOption) (
 
 	res := new(AssetDetailResponse)
 
-	err = json.Unmarshal(data, res)
-	if err != nil {
+	if err := json.Unmarshal(data, res); err != nil {
 		return nil, err
 	}
 

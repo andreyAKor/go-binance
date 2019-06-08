@@ -116,8 +116,7 @@ func (s *GetDepositAddresService) Do(ctx context.Context, opts ...RequestOption)
 
 	res := new(DepositAddresResponse)
 
-	err = json.Unmarshal(data, res)
-	if err != nil {
+	if err := json.Unmarshal(data, res); err != nil {
 		return nil, err
 	}
 
