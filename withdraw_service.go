@@ -7,11 +7,12 @@ import (
 
 // CreateWithdrawService create withdraw
 type CreateWithdrawService struct {
-	c       *Client
-	asset   string
-	address string
-	amount  string
-	name    *string
+	c          *Client
+	asset      string
+	address    string
+	amount     string
+	name       *string
+	addressTag *string
 }
 
 // Asset set asset
@@ -38,6 +39,12 @@ func (s *CreateWithdrawService) Name(name string) *CreateWithdrawService {
 	return s
 }
 
+// Secondary address identifier for coins like XRP,XMR etc.
+func (s *CreateWithdrawService) AddressTag(addressTag string) *CreateWithdrawService {
+	s.addressTag = &addressTag
+	return s
+}
+
 // Do send request
 func (s *CreateWithdrawService) Do(ctx context.Context, opts ...RequestOption) (*WithdrawResponse, error) {
 	r := &request{
@@ -52,6 +59,10 @@ func (s *CreateWithdrawService) Do(ctx context.Context, opts ...RequestOption) (
 
 	if s.name != nil {
 		r.setParam("name", *s.name)
+	}
+
+	if s.addressTag != nil {
+		r.setParam("addressTag", *s.addressTag)
 	}
 
 	data, err := s.c.callAPI(ctx, r, opts...)
